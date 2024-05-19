@@ -7,6 +7,7 @@ Section 1 Group 4 : S 1 G 4
 
 ## Group Members
 - Rhythm Bhandari
+- Sundar Gurung
 
 ## Data Source
 Multi-user input
@@ -17,3 +18,7 @@ API:
 - Users can search for movies by title or genre.
 - Users can view detailed movie information, including, cast, and ratings.
 - Users can add movies to their watchlist.
+- Users have an splash screen when starting the app.
+- Users can sign up and log in.
+- User can filter by categories.
+- Users can view their watchlist and favourites movies.
