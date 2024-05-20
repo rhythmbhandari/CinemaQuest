@@ -11,6 +11,7 @@ Section 1 Group 4 : S 1 G 4
 - Rhythm Bhandari
 - Sundar Gurung
 - Birendra Bista
+- Arose Gautam
 
 ## Data Source
 
@@ -31,3 +32,7 @@ Section 1 Group 4 : S 1 G 4
 - Users can write their own ratings.
 - Users can delete their own ratings.
 - User can filter the movies based on cast.
+- User can view the related movies.
+-  User can can create movie albums
+-  User can add movies to albums
+-  User can remove movies from album
