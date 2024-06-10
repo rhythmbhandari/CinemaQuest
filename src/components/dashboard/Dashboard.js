@@ -4,6 +4,7 @@ import NowPlaying from '../nowplaying/NowPlaying'
 import Trending from '../trending/Trending'
 import Upcoming from '../upcoming/Upcoming'
 import styles from './styles'
+import * as SplashScreen from 'expo-splash-screen';
 
 const Dashboard = ({ navigation }) => {
     return (
@@ -44,5 +45,6 @@ const Dashboard = ({ navigation }) => {
     )
 
 }
+SplashScreen.hideAsync();
 
 export default Dashboard

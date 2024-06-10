@@ -4,7 +4,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Moviecollection from './tabs/Moviecollection';
 import Home from './tabs/Home';
 import Watchlist from './tabs/Watchlist'
+import * as SplashScreen from 'expo-splash-screen';
 
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const Tab = createBottomTabNavigator();
