@@ -44,8 +44,6 @@ export const fetchMovieDetails = async (movieId) => {
         const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options);
         const responseJson = await response.json();
         return responseJson;
-
-
     } catch (error) {
         throw error;
     }
