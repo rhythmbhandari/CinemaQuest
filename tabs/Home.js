@@ -17,9 +17,6 @@ const commonHeaderOptions = {
 export default function Home() {
     return (
 
-
-
-
         <HomeStack.Navigator>
             <HomeStack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
             <HomeStack.Screen name="Movies" component={AllMovies} options={commonHeaderOptions} />
