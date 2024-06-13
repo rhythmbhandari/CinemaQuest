@@ -54,6 +54,14 @@ const styles = StyleSheet.create({
   detailsContainer: {
     alignItems: 'center',
   },
+  rating: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  ratingCount: {
+    color: '#fff',
+    fontSize: 16,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -66,6 +74,29 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20
   },
+  castTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  castScrollView: {
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
+  castContainer: {
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  castImage: {
+    width: 80,
+    height: 120,
+    borderRadius: 10,
+  },
+  castName: {
+    marginTop: 5,
+    textAlign: 'center',
+  },
+
 });
 
 
