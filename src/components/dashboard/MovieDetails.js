@@ -63,7 +63,7 @@ const MovieDetails = ({ route, navigation }) => {
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.castScrollView}>
                             {movieDetails.cast.map(castMember => (
                                 <TouchableOpacity
-                                    key={castMember.id}
+                                    key={castMember.credit_id}
                                     onPress={() => navigation.navigate('CastDetails', { castId: castMember.id })}
                                 >
                                     <View style={styles.castContainer}>
