@@ -1,54 +1,54 @@
-
 const options = {
     method: 'GET',
     headers: {
         accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ZThmNzI2NmNlNDMwZGMyNzM2NDI5YjlmYmE4Mzc5ZiIsInN1YiI6IjY2NGE1MzVhN2UzZjJkMTczNzY2MjI4YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yd52wGiqhohRucVYDCJuedv3MEs_uEqJW1L6ijDMyXI'
-    }
-};
+    },
+}
 
-export const fetchMovies = async (type, fetchAllPages = false) => {
-    let allMovies = [];
-    let currentPage = 1;
+const BASE_URL = 'https://api.themoviedb.org/3'
+const defaultParams = {
+    api_key: '6e8f7266ce430dc2736429b9fba8379f',
+    language: 'en-US',
+}
 
+export const fetchMovies = (url, actionType, params) => async dispatch => {
     try {
-        while (true) {
-            // console.log(`Fetching movies for type: ${type}, page: ${currentPage}`);
-            const response = await fetch(`https://api.themoviedb.org/3/movie/${type}?language=en-US&page=${currentPage}`, options);
-            const responseJson = await response.json();
-            // console.log(`Response for type: ${type}, page: ${currentPage}`, responseJson);
-            allMovies = [...allMovies, ...responseJson.results];
-            if (!fetchAllPages || currentPage >= 20) {
-                break;
-            }
-            currentPage++;
-        }
-
-        // Filter out duplicate movies
-        const uniqueMovies = allMovies.reduce((acc, movie) => {
-            if (!acc.some(m => m.id === movie.id)) {
-                acc.push(movie);
-            }
-            return acc;
-        }, []);
-
-        return uniqueMovies;
+        const data = await request(url, params)
+        dispatch({
+            type: actionType,
+            payload: {
+                data: data,
+                errors: null,
+            },
+        })
     } catch (error) {
-        throw error;
+        dispatch({
+            type: actionType,
+            payload: {
+                data: null,
+                errors: error,
+            },
+        })
     }
 }
 
-
-export const fetchMovieDetails = async (movieId) => {
+export const fetchMovieDetails = async (movieId, params) => {
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options);
-        const responseJson = await response.json();
-
-        const castResponse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`, options);
-        const castJson = await castResponse.json();
-        return { ...responseJson, cast: castJson.cast };
-
+        return await request(`movie/${movieId}`, params)
     } catch (error) {
-        throw error;
+        throw error
     }
-};
+}
+
+const request = async (url, params = {}) => {
+    const obj = { ...defaultParams, ...params }
+    const response = await fetch(`${BASE_URL}/${url}?${queryString(obj)}`)
+    const data = await response.json()
+    return data
+}
+
+function queryString(obj) {
+    return Object.entries(obj)
+        .map(([index, val]) => `${index}=${val}`)
+        .join('&')
+}

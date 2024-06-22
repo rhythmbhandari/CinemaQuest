@@ -1,20 +1,20 @@
+import { useEffect, useState } from 'react'
+import { Text, ScrollView } from 'react-native'
+import MoviesItem from '../MoviesItem'
+import { fetchMovies } from '../../service/requestService'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { useEffect, useState } from 'react';
-import { Text, ScrollView, } from 'react-native'
-import MoviesItem from '../MoviesItem';
-import { fetchMovies } from '../../service/requestService';
-
+const ACTION_TYPE = 'upcoming/fetchUpcoming'
 const Upcoming = ({ navigation }) => {
-    const [movies, setMovies] = useState([])
+    const dispatch = useDispatch()
+    const movies = useSelector(state => state.upcoming.results)
 
-    function getMovies() {
-        fetchMovies("upcoming")
-            .then(response => setMovies(response))
-            .catch(err => console.log(err))
-
-    }
     useEffect(() => {
-        getMovies()
+        dispatch(
+            fetchMovies(`movie/upcoming`, ACTION_TYPE, {
+                page: 1,
+            })
+        )
     }, [])
 
     return (
@@ -22,20 +22,24 @@ const Upcoming = ({ navigation }) => {
             contentContainerStyle={{
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
         >
             {movies.length > 0 ? (
-                movies.map((movie) => (
-                    <MoviesItem item={movie} key={movie.id} navigation={navigation} />
+                movies.map(movie => (
+                    <MoviesItem
+                        item={movie}
+                        key={movie.id}
+                        navigation={navigation}
+                    />
                 ))
             ) : (
                 <Text>No movies available</Text>
             )}
         </ScrollView>
-    );
+    )
 }
 
 export default Upcoming
