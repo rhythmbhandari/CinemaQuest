@@ -100,21 +100,16 @@ const MovieDetails = ({ route, navigation }) => {
                                         <Text style={styles.castName}>
                                             {castMember.character}
                                         </Text>
-                                        {castMember.profile_path ? (
-                                            <Image
-                                                style={styles.castImage}
-                                                source={getImageApi(
-                                                    castMember.profile_path
-                                                )}
-                                            />
-                                        ) : (
-                                            <View
-                                                style={{
-                                                    ...styles.castImage,
-                                                    backgroundColor: 'white',
-                                                }}
-                                            ></View>
-                                        )}
+                                        <Image
+                                            style={styles.castImage}
+                                            source={
+                                                castMember.profile_path
+                                                    ? getImageApi(
+                                                          castMember.profile_path
+                                                      )
+                                                    : require('../../../assets/CastIcon.jpeg')
+                                            }
+                                        />
                                         <Text style={styles.castName}>
                                             {castMember.name}
                                         </Text>
