@@ -40,6 +40,16 @@ export const fetchMovieDetails = async (movieId, params) => {
     }
 }
 
+export const fetchCastDetails = async castId => {
+    try {
+        return await request(`person/${castId}`, {
+            append_to_response: 'movie_credits',
+        })
+    } catch (error) {
+        throw error
+    }
+}
+
 const request = async (url, params = {}) => {
     const obj = { ...defaultParams, ...params }
     const response = await fetch(`${BASE_URL}/${url}?${queryString(obj)}`)
