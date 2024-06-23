@@ -21,7 +21,7 @@ const MovieDetails = ({ route, navigation }) => {
     function getMovieDetails() {
         setLoading(true)
         fetchMovieDetails(movieId, {
-            append_to_response: 'credits,videos,images',
+            append_to_response: 'credits,videos,images, similar',
         })
             .then(response => setMovieDetails(response))
             .catch(error => console.error(error))
