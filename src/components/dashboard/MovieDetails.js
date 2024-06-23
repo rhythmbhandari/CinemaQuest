@@ -21,7 +21,7 @@ const MovieDetails = ({ route, navigation }) => {
     function getMovieDetails() {
         setLoading(true)
         fetchMovieDetails(movieId, {
-            append_to_response: 'credits,videos,images',
+            append_to_response: 'credits,videos,images,similar',
         })
             .then(response => setMovieDetails(response))
             .catch(error => console.error(error))
@@ -113,6 +113,35 @@ const MovieDetails = ({ route, navigation }) => {
                                         <Text style={styles.castName}>
                                             {castMember.name}
                                         </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView> 
+                        <Text
+                            style={{ color: 'white', margin: 10, fontSize: 20 }}
+                        >
+                            Similar Movies
+                        </Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        >
+                            {movieDetails.similar.results.map(movie => (
+                                <TouchableOpacity
+                                    key={movie.id}
+                                    onPress={() =>
+                                        navigation.push('MovieDetails', {
+                                            movieId: movie.id,
+                                        })
+                                    }
+                                >
+                                    <View style={styles.castContainer}>
+                                        <Image
+                                            style={styles.similarMovieImage}
+                                            source={getImageApi(
+                                                movie.poster_path
+                                            )}
+                                        />
                                     </View>
                                 </TouchableOpacity>
                             ))}
