@@ -120,6 +120,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
     },
+    similarMovieImage: {
+        height: 180,
+        width: 100,
+    },
 })
 
 export default styles
