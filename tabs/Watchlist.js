@@ -1,10 +1,26 @@
 import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import WatchlistMovies from '../src/components/watchlist/WatchlistMovies'
+import MovieDetails from '../src/components/dashboard/MovieDetails'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { commonHeaderOptions } from './Home'
 
-export default function Watchlist() {
+const watchlistStack = createNativeStackNavigator()
+const Watchlist = ({ navigation }) => {
     return (
-        <SafeAreaView style={{ backgroundColor: 'black', flex: 1 }}>
-            <Text style={{ color: 'white' }}>WatchList</Text>
-        </SafeAreaView>
+        <watchlistStack.Navigator>
+            <watchlistStack.Screen
+                name="WatchList"
+                component={WatchlistMovies}
+                options={{ headerShown: false }}
+            />
+            <watchlistStack.Screen
+                name="MovieDetails"
+                component={MovieDetails}
+                options={commonHeaderOptions}
+            />
+        </watchlistStack.Navigator>
     )
 }
+
+export default Watchlist
