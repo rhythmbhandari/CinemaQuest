@@ -4,10 +4,11 @@ import Dashboard from '../src/components/dashboard/Dashboard'
 import AllMovies from '../src/components/dashboard/AllMovies'
 import MovieDetails from '../src/components/dashboard/MovieDetails'
 import CastDetails from '../src/components/cast/CastDetails'
+import Authentication from '../src/components/Authentication'
 
 const HomeStack = createNativeStackNavigator()
 
-const commonHeaderOptions = {
+export const commonHeaderOptions = {
     headerStyle: {
         backgroundColor: 'black',
     },
@@ -37,6 +38,10 @@ export default function Home() {
                 name="CastDetails"
                 component={CastDetails}
                 options={commonHeaderOptions}
+            />
+            <HomeStack.Screen
+                name="Authentication"
+                component={Authentication}
             />
         </HomeStack.Navigator>
     )

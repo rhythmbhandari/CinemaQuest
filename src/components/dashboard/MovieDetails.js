@@ -6,10 +6,19 @@ import {
     ScrollView,
     ActivityIndicator,
     TouchableOpacity,
+    Pressable,
+    Alert,
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { fetchMovieDetails } from '../../service/requestService'
 import { getImageApi } from '../../../utils/movieImage'
+import {
+    addToWatchlist,
+    removeFromWatchlist,
+    getWatchlistMovies,
+} from '../../service/watchlistService'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import styles from './styles'
 
@@ -17,6 +26,7 @@ const MovieDetails = ({ route, navigation }) => {
     const { movieId } = route.params
     const [movieDetails, setMovieDetails] = useState([])
     const [loading, setLoading] = useState(true)
+    const [inWatchlist, setInWatchlist] = useState(false)
 
     function getMovieDetails() {
         setLoading(true)
@@ -27,9 +37,20 @@ const MovieDetails = ({ route, navigation }) => {
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
     }
+    const checkWatchlistStatus = async () => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        if (sessionId) {
+            const watchlistMovies = await getWatchlistMovies(sessionId)
+            const isInWatchlist = watchlistMovies.some(
+                movie => movie.id === movieId
+            )
+            setInWatchlist(isInWatchlist)
+        }
+    }
 
     useEffect(() => {
         getMovieDetails()
+        checkWatchlistStatus()
     }, [])
 
     const convertToGenres = (genre, messageNotFound = 'Uninformed') =>
@@ -38,6 +59,39 @@ const MovieDetails = ({ route, navigation }) => {
                 ? `${genre[0].name}, ${genre[1].name}`
                 : genre[0].name
             : messageNotFound
+
+    const handleAddToWatchlist = async () => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        console.log(sessionId)
+        if (!sessionId) {
+            navigation.navigate('Authentication')
+            return
+        }
+        try {
+            if (inWatchlist) {
+                // Remove from watchlist
+                const response = await removeFromWatchlist(movieId, sessionId)
+                if (response.success) {
+                    setInWatchlist(false)
+                    Alert.alert('Success', 'Removed from watchlist')
+                } else {
+                    Alert.alert('Error', response.status_message)
+                }
+            } else {
+                // Add to watchlist
+                const response = await addToWatchlist(movieId, sessionId)
+                if (response.success) {
+                    setInWatchlist(true)
+                    Alert.alert('Success', 'Added to watchlist')
+                } else {
+                    Alert.alert('Error', response.status_message)
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            Alert.alert('Error', 'Failed to update watchlist')
+        }
+    }
 
     if (loading) {
         return (
@@ -54,11 +108,65 @@ const MovieDetails = ({ route, navigation }) => {
                     <View style={styles.detailsContainer}>
                         {movieDetails.poster_path && (
                             <Image
-                                style={{ width: '100%', height: 300 }}
+                                style={{ width: '100%', height: 400 }}
                                 source={getImageApi(movieDetails.poster_path)}
                             />
                         )}
-                        <Text style={styles.title}>{movieDetails.title}</Text>
+                        {/* <View style={{ alignItems: 'center' }}>
+                            <Text style={styles.title}>
+                                {movieDetails.title}
+                            </Text>
+                        </View> */}
+
+                        <View style={styles.iconContainer}>
+                            <View style={styles.iconStyle}>
+                                <Pressable onPress={() => handleShowTrailer()}>
+                                    <Ionicons
+                                        name={'play-circle'}
+                                        size={34}
+                                        color="white"
+                                    />
+                                </Pressable>
+                                <Text style={{ color: 'white' }}>
+                                    Watch Trailer
+                                </Text>
+                            </View>
+
+                            <View style={styles.iconStyle}>
+                                <Pressable
+                                    onPress={() => handleAddToWatchlist()}
+                                >
+                                    <Ionicons
+                                        name={
+                                            inWatchlist
+                                                ? 'bookmark'
+                                                : 'bookmark-outline'
+                                        }
+                                        size={34}
+                                        color="white"
+                                    />
+                                </Pressable>
+                                <Text style={{ color: 'white' }}>
+                                    {inWatchlist
+                                        ? 'Remove from Watchlist'
+                                        : 'Add to Watchlist'}
+                                </Text>
+                            </View>
+                            <View style={styles.iconStyle}>
+                                <Pressable
+                                    onPress={() => handleAddToMovieCollection()}
+                                >
+                                    <Ionicons
+                                        name={'list'}
+                                        size={34}
+                                        color="white"
+                                    />
+                                </Pressable>
+                                <Text style={{ color: 'white' }}>
+                                    Add To List
+                                </Text>
+                            </View>
+                        </View>
                         <View style={styles.rowContainer}>
                             <Text style={styles.runtime}>
                                 Runtime: {movieDetails.runtime} minutes
@@ -81,7 +189,11 @@ const MovieDetails = ({ route, navigation }) => {
                         <Text style={styles.overview}>
                             Overview: {movieDetails.overview}
                         </Text>
-
+                        <Text
+                            style={{ color: 'white', margin: 5, fontSize: 20 }}
+                        >
+                            Casts
+                        </Text>
                         <ScrollView
                             horizontal
                             showsHorizontalScrollIndicator={false}
@@ -116,7 +228,7 @@ const MovieDetails = ({ route, navigation }) => {
                                     </View>
                                 </TouchableOpacity>
                             ))}
-                        </ScrollView> 
+                        </ScrollView>
                         <Text
                             style={{ color: 'white', margin: 10, fontSize: 20 }}
                         >
