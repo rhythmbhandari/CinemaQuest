@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     Pressable,
     Alert,
+    Modal
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { fetchMovieDetails } from '../../service/requestService'
@@ -27,6 +28,8 @@ const MovieDetails = ({ route, navigation }) => {
     const [movieDetails, setMovieDetails] = useState([])
     const [loading, setLoading] = useState(true)
     const [inWatchlist, setInWatchlist] = useState(false)
+    const [trailerKey, setTrailerKey] = useState('')
+    const [modalVisible, setModalVisible] = useState(false)
 
     function getMovieDetails() {
         setLoading(true)
@@ -46,7 +49,7 @@ const MovieDetails = ({ route, navigation }) => {
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
     }
-    
+
     const checkWatchlistStatus = async () => {
         const sessionId = await AsyncStorage.getItem('session_id')
         if (sessionId) {
@@ -62,6 +65,14 @@ const MovieDetails = ({ route, navigation }) => {
         getMovieDetails()
         checkWatchlistStatus()
     }, [])
+
+    const handleShowTrailer = () => {
+        if (trailerKey) {
+            setModalVisible(true)
+        }else {
+            Alert.alert('Trailer not available')
+        }
+    }
 
     const convertToGenres = (genre, messageNotFound = 'Uninformed') =>
         genre.length > 0
@@ -79,7 +90,6 @@ const MovieDetails = ({ route, navigation }) => {
         }
         try {
             if (inWatchlist) {
-                // Remove from watchlist
                 const response = await removeFromWatchlist(movieId, sessionId)
                 if (response.success) {
                     setInWatchlist(false)
@@ -88,7 +98,6 @@ const MovieDetails = ({ route, navigation }) => {
                     Alert.alert('Error', response.status_message)
                 }
             } else {
-                // Add to watchlist
                 const response = await addToWatchlist(movieId, sessionId)
                 if (response.success) {
                     setInWatchlist(true)
@@ -137,7 +146,7 @@ const MovieDetails = ({ route, navigation }) => {
                                         color="white"
                                     />
                                 </Pressable>
-                                <Text style={{ color: 'white' }}>
+                                <Text style={styles.text}>
                                     Watch Trailer
                                 </Text>
                             </View>
@@ -273,6 +282,37 @@ const MovieDetails = ({ route, navigation }) => {
                     <Text>Loading...</Text>
                 )}
             </ScrollView>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible)
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <YoutubeIframe
+                            height={250}
+                            width={400}
+                            play={true}
+                            videoId={trailerKey}
+                        />
+                        <Pressable
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text
+                                style={[
+                                    styles.text,
+                                    { fontSize: 25, color: 'grey' },
+                                ]}
+                            >
+                                Close
+                            </Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }
