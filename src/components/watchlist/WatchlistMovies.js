@@ -4,11 +4,10 @@ import {
     FlatList,
     ActivityIndicator,
     Image,
-    ScrollView,
     SafeAreaView,
     TouchableOpacity,
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import styles from './styles'
 import { getImageApi } from '../../../utils/movieImage'
 import { getWatchlistMovies } from '../../service/watchlistService'
@@ -24,7 +23,7 @@ const WatchlistMovies = ({ navigation }) => {
             setLoading(true)
             const sessionId = await AsyncStorage.getItem('session_id')
             const watchlistMovies = await getWatchlistMovies(sessionId)
-            setWatchlist(watchlistMovies)
+            setWatchlist(watchlistMovies || [])
         } catch (error) {
             console.error('Error fetching watchlist:', error)
         } finally {
@@ -99,7 +98,16 @@ const WatchlistMovies = ({ navigation }) => {
                         )}
                     />
                 ) : (
-                    <Text>No movies in watchlist</Text>
+                    <View style={styles.emptyWatchlist}>
+                        <Text
+                            style={{
+                                color: 'grey',
+                                fontSize: 25,
+                            }}
+                        >
+                            Watchlist is empty!!!.
+                        </Text>
+                    </View>
                 )}
             </View>
         </SafeAreaView>

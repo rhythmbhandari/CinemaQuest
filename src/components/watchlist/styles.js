@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'black',
     },
+    emptyWatchlist: {
+        alignItems: 'center',
+        marginTop: 200,
+    },
 })
 
 export default styles

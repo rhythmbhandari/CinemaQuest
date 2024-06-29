@@ -24,9 +24,12 @@ export const createSession = async requestToken => {
     )
     const data = await response.json()
     console.log(data)
-    await AsyncStorage.setItem('session_id', data.session_id)
-
-    return data.session_id
+    if (data.success && data.session_id) {
+        await AsyncStorage.setItem('session_id', data.session_id)
+        return data.session_id
+    } else {
+        throw new Error('Failed to create session')
+    }
 }
 
 export const addToWatchlist = async (movieId, sessionId) => {
