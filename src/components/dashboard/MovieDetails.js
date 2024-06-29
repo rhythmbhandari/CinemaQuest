@@ -19,7 +19,7 @@ import {
 } from '../../service/watchlistService'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import YoutubeIframe from 'react-native-youtube-iframe'
 import styles from './styles'
 
 const MovieDetails = ({ route, navigation }) => {
@@ -33,10 +33,20 @@ const MovieDetails = ({ route, navigation }) => {
         fetchMovieDetails(movieId, {
             append_to_response: 'credits,videos,images,similar',
         })
-            .then(response => setMovieDetails(response))
+            .then(response => {
+                setMovieDetails(response)
+                const trailer = response.videos.results.find(
+                    video =>
+                        video.type === 'Trailer' && video.site === 'YouTube'
+                )
+                if (trailer) {
+                    setTrailerKey(trailer.key)
+                }
+            })
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
     }
+    
     const checkWatchlistStatus = async () => {
         const sessionId = await AsyncStorage.getItem('session_id')
         if (sessionId) {
