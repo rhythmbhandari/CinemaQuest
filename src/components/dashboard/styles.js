@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
 
     overview: {
         color: 'white',
-        marginBottom: 10,
         padding: 10,
     },
     rating: {
@@ -129,20 +128,12 @@ const styles = StyleSheet.create({
     iconStyle: {
         alignItems: 'center',
     },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    },
-    modalContent: {
-        backgroundColor: 'black',
-        borderRadius: 10,
-        padding: 20,
-        alignItems: 'center',
-    },
     text: {
         color: 'white',
+    },
+    reviewTxt: {
+        color: 'white',
+        padding: 10,
     },
 })
 

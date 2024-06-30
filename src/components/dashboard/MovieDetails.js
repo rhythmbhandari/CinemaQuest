@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     Pressable,
     Alert,
-    Modal
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { fetchMovieDetails } from '../../service/requestService'
@@ -20,8 +19,9 @@ import {
 } from '../../service/watchlistService'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import YoutubeIframe from 'react-native-youtube-iframe'
 import styles from './styles'
+import ReviewModal from '../Modals/ReviewModal'
+import WatchTrailerModal from '../Modals/WatchTrailerModal'
 
 const MovieDetails = ({ route, navigation }) => {
     const { movieId } = route.params
@@ -30,11 +30,12 @@ const MovieDetails = ({ route, navigation }) => {
     const [inWatchlist, setInWatchlist] = useState(false)
     const [trailerKey, setTrailerKey] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
+    const [trailerModalVisible, setTrailerModalVisible] = useState(false)
 
     function getMovieDetails() {
         setLoading(true)
         fetchMovieDetails(movieId, {
-            append_to_response: 'credits,videos,images,similar',
+            append_to_response: 'credits,videos,images,similar,reviews',
         })
             .then(response => {
                 setMovieDetails(response)
@@ -65,13 +66,11 @@ const MovieDetails = ({ route, navigation }) => {
         getMovieDetails()
         checkWatchlistStatus()
     }, [])
-
-    const handleShowTrailer = () => {
-        if (trailerKey) {
-            setModalVisible(true)
-        }else {
-            Alert.alert('Trailer not available')
-        }
+    const toggleModalVisibility = () => {
+        setModalVisible(!modalVisible)
+    }
+    const toggleTrailerModalVisibility = () => {
+        setTrailerModalVisible(!trailerModalVisible)
     }
 
     const convertToGenres = (genre, messageNotFound = 'Uninformed') =>
@@ -139,16 +138,18 @@ const MovieDetails = ({ route, navigation }) => {
 
                         <View style={styles.iconContainer}>
                             <View style={styles.iconStyle}>
-                                <Pressable onPress={() => handleShowTrailer()}>
+                                <Pressable
+                                    onPress={() =>
+                                        toggleTrailerModalVisibility()
+                                    }
+                                >
                                     <Ionicons
                                         name={'play-circle'}
                                         size={34}
                                         color="white"
                                     />
                                 </Pressable>
-                                <Text style={styles.text}>
-                                    Watch Trailer
-                                </Text>
+                                <Text style={styles.text}>Watch Trailer</Text>
                             </View>
 
                             <View style={styles.iconStyle}>
@@ -208,6 +209,16 @@ const MovieDetails = ({ route, navigation }) => {
                         <Text style={styles.overview}>
                             Overview: {movieDetails.overview}
                         </Text>
+                        <Pressable onPress={toggleModalVisibility}>
+                            <Text style={styles.reviewTxt}>
+                                See Reviews ...
+                            </Text>
+                        </Pressable>
+                        <ReviewModal
+                            modalVisible={modalVisible}
+                            toggleModalVisibility={toggleModalVisibility}
+                            reviews={movieDetails.reviews.results}
+                        />
                         <Text
                             style={{ color: 'white', margin: 5, fontSize: 20 }}
                         >
@@ -282,37 +293,11 @@ const MovieDetails = ({ route, navigation }) => {
                     <Text>Loading...</Text>
                 )}
             </ScrollView>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible)
-                }}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <YoutubeIframe
-                            height={250}
-                            width={400}
-                            play={true}
-                            videoId={trailerKey}
-                        />
-                        <Pressable
-                            onPress={() => setModalVisible(!modalVisible)}
-                        >
-                            <Text
-                                style={[
-                                    styles.text,
-                                    { fontSize: 25, color: 'grey' },
-                                ]}
-                            >
-                                Close
-                            </Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
+            <WatchTrailerModal
+                modalVisible={trailerModalVisible}
+                toggleModalVisibility={toggleTrailerModalVisibility}
+                trailerKey={trailerKey}
+            />
         </SafeAreaView>
     )
 }
