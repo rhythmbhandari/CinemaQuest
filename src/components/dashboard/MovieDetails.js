@@ -130,12 +130,6 @@ const MovieDetails = ({ route, navigation }) => {
                                 source={getImageApi(movieDetails.poster_path)}
                             />
                         )}
-                        {/* <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.title}>
-                                {movieDetails.title}
-                            </Text>
-                        </View> */}
-
                         <View style={styles.iconContainer}>
                             <View style={styles.iconStyle}>
                                 <Pressable
