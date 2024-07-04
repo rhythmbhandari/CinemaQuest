@@ -16,7 +16,14 @@ export const commonHeaderOptions = {
     headerTitleAlign: 'center',
 }
 
-export default function Home() {
+const Home = ({ navigation }) => {
+    React.useLayoutEffect(() => {
+        const cancelStacks = navigation.addListener('tabPress', e => {
+            e.preventDefault()
+            navigation.navigate('Dashboard')
+        })
+        return cancelStacks
+    }, [navigation])
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen
@@ -46,3 +53,4 @@ export default function Home() {
         </HomeStack.Navigator>
     )
 }
+export default Home

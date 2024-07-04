@@ -45,7 +45,7 @@ const Dashboard = ({ navigation }) => {
                     <Text style={{ color: '#fff' }}>Now Playing</Text>
                     <Pressable
                         onPress={() =>
-                            navigation.navigate('Movies', {
+                            navigation.push('Movies', {
                                 category: 'now_playing',
                             })
                         }
@@ -66,7 +66,7 @@ const Dashboard = ({ navigation }) => {
                     <Text style={{ color: '#fff' }}>Trending</Text>
                     <Pressable
                         onPress={() =>
-                            navigation.navigate('Movies', {
+                            navigation.push('Movies', {
                                 category: 'popular',
                             })
                         }
@@ -88,7 +88,7 @@ const Dashboard = ({ navigation }) => {
                     <Text style={{ color: '#fff' }}>Upcoming</Text>
                     <Pressable
                         onPress={() =>
-                            navigation.navigate('Movies', {
+                            navigation.push('Movies', {
                                 category: 'upcoming',
                             })
                         }

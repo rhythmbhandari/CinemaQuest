@@ -16,12 +16,14 @@ import {
     addToWatchlist,
     removeFromWatchlist,
     getWatchlistMovies,
+    rateMovie,
 } from '../../service/watchlistService'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
 import ReviewModal from '../Modals/ReviewModal'
 import WatchTrailerModal from '../Modals/WatchTrailerModal'
+import RatingModal from '../Modals/RatingModal/RatingModal'
 
 const MovieDetails = ({ route, navigation }) => {
     const { movieId } = route.params
@@ -31,6 +33,8 @@ const MovieDetails = ({ route, navigation }) => {
     const [trailerKey, setTrailerKey] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
     const [trailerModalVisible, setTrailerModalVisible] = useState(false)
+    const [ratingModalVisible, setRatingModalVisible] = useState(false)
+    const [userRating, setUserRating] = useState(0)
 
     function getMovieDetails() {
         setLoading(true)
@@ -82,7 +86,7 @@ const MovieDetails = ({ route, navigation }) => {
 
     const handleAddToWatchlist = async () => {
         const sessionId = await AsyncStorage.getItem('session_id')
-        console.log(sessionId)
+        // console.log(sessionId)
         if (!sessionId) {
             navigation.navigate('Authentication')
             return
@@ -108,6 +112,29 @@ const MovieDetails = ({ route, navigation }) => {
         } catch (error) {
             console.error(error)
             Alert.alert('Error', 'Failed to update watchlist')
+        }
+    }
+
+    const handleRateMovie = async rating => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        if (!sessionId) {
+            navigation.navigate('Authentication')
+            return
+        }
+        try {
+            const response = await rateMovie(movieId, sessionId, rating)
+            if (response.success) {
+                setUserRating(rating)
+                Alert.alert('Success', `Rated the movie ${rating} out of 10`)
+                setRatingModalVisible(false)
+                const updatedWatchlistStatus = await checkWatchlistStatus()
+                setInWatchlist(updatedWatchlistStatus)
+            } else {
+                Alert.alert('Error', response.status_message)
+            }
+        } catch (error) {
+            console.error(error)
+            Alert.alert('Error', 'Failed to rate the movie')
         }
     }
 
@@ -161,9 +188,21 @@ const MovieDetails = ({ route, navigation }) => {
                                     />
                                 </Pressable>
                                 <Text style={{ color: 'white' }}>
-                                    {inWatchlist
-                                        ? 'Remove from Watchlist'
-                                        : 'Add to Watchlist'}
+                                    Watchlist
+                                </Text>
+                            </View>
+                            <View style={styles.iconStyle}>
+                                <Pressable
+                                    onPress={() => setRatingModalVisible(true)}
+                                >
+                                    <Ionicons
+                                        name={'star'}
+                                        size={34}
+                                        color="white"
+                                    />
+                                </Pressable>
+                                <Text style={{ color: 'white' }}>
+                                    Rate Movie
                                 </Text>
                             </View>
                             <View style={styles.iconStyle}>
@@ -291,6 +330,11 @@ const MovieDetails = ({ route, navigation }) => {
                 modalVisible={trailerModalVisible}
                 toggleModalVisibility={toggleTrailerModalVisibility}
                 trailerKey={trailerKey}
+            />
+            <RatingModal
+                visible={ratingModalVisible}
+                onClose={() => setRatingModalVisible(false)}
+                onSubmit={handleRateMovie}
             />
         </SafeAreaView>
     )
