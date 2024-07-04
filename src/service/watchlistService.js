@@ -78,3 +78,19 @@ export const removeFromWatchlist = async (movieId, sessionId) => {
     const data = await response.json()
     return data
 }
+
+export const rateMovie = async (movieId, sessionId, rating) => {
+    const url = `${BASE_URL}/movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            value: rating,
+        }),
+    })
+    const data = await response.json()
+
+    return data
+}

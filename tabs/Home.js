@@ -17,6 +17,13 @@ export const commonHeaderOptions = {
 }
 
 export default function Home() {
+    React.useLayoutEffect(() => {
+        const cancelStacks = navigation.addListener('tabPress', e => {
+            e.preventDefault()
+            navigation.navigate('Dashboard')
+        })
+        return cancelStacks
+    }, [navigation])
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen
