@@ -1,13 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Moviecollection from './tabs/Moviecollection'
 import Home from './tabs/Home'
 import Watchlist from './tabs/Watchlist'
 import * as SplashScreen from 'expo-splash-screen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { store } from './src/redux/store'
 import { Provider } from 'react-redux'
+import Favourite from './tabs/Favourite'
 SplashScreen.preventAutoHideAsync()
 
 export default function App() {
@@ -27,8 +27,10 @@ export default function App() {
                                     iconName = focused
                                         ? 'bookmark'
                                         : 'bookmark-outline'
-                                } else if (route.name === 'Moviecollection') {
-                                    iconName = focused ? 'film' : 'film-outline'
+                                } else if (route.name === 'Favourite') {
+                                    iconName = focused
+                                        ? 'heart'
+                                        : 'heart-outline'
                                 }
                                 return (
                                     <Ionicons
@@ -49,10 +51,7 @@ export default function App() {
                     >
                         <Tab.Screen name="HomeScreen" component={Home} />
                         <Tab.Screen name="Watchlist" component={Watchlist} />
-                        <Tab.Screen
-                            name="Moviecollection"
-                            component={Moviecollection}
-                        />
+                        <Tab.Screen name="Favourite" component={Favourite} />
                     </Tab.Navigator>
                 </NavigationContainer>
             </GestureHandlerRootView>
