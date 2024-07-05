@@ -94,3 +94,50 @@ export const rateMovie = async (movieId, sessionId, rating) => {
 
     return data
 }
+
+export const addToFavorites = async (movieId, sessionId) => {
+    const url = `${BASE_URL}/account/{account_id}/favorite?api_key=${API_KEY}&session_id=${sessionId}`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            media_type: 'movie',
+            media_id: movieId,
+            favorite: true,
+        }),
+    })
+    const data = await response.json()
+
+    return data
+}
+
+export const removeFromFavorites = async (movieId, sessionId) => {
+    const url = `${BASE_URL}/account/{account_id}/favorite?api_key=${API_KEY}&session_id=${sessionId}`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            media_type: 'movie',
+            media_id: movieId,
+            favorite: false,
+        }),
+    })
+    const data = await response.json()
+    return data
+}
+
+export const getFavoriteMovies = async sessionId => {
+    try {
+        const favoritesUrl = `${BASE_URL}/account/{account_id}/favorite/movies?api_key=${API_KEY}&session_id=${sessionId}`
+        const favoritesResponse = await fetch(favoritesUrl)
+        const favoritesData = await favoritesResponse.json()
+        return favoritesData.results
+    } catch (error) {
+        console.error('Error fetching favorite movies:', error)
+        throw error
+    }
+}

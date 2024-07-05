@@ -17,6 +17,9 @@ import {
     removeFromWatchlist,
     getWatchlistMovies,
     rateMovie,
+    getFavoriteMovies,
+    removeFromFavorites,
+    addToFavorites,
 } from '../../service/watchlistService'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -30,6 +33,7 @@ const MovieDetails = ({ route, navigation }) => {
     const [movieDetails, setMovieDetails] = useState([])
     const [loading, setLoading] = useState(true)
     const [inWatchlist, setInWatchlist] = useState(false)
+    const [inFavorites, setInFavorites] = useState(false)
     const [trailerKey, setTrailerKey] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
     const [trailerModalVisible, setTrailerModalVisible] = useState(false)
@@ -65,10 +69,21 @@ const MovieDetails = ({ route, navigation }) => {
             setInWatchlist(isInWatchlist)
         }
     }
+    const checkFavoritesStatus = async () => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        if (sessionId) {
+            const favoriteMovies = await getFavoriteMovies(sessionId)
+            const isInFavorites = favoriteMovies.some(
+                movie => movie.id === movieId
+            )
+            setInFavorites(isInFavorites)
+        }
+    }
 
     useEffect(() => {
         getMovieDetails()
         checkWatchlistStatus()
+        checkFavoritesStatus()
     }, [])
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible)
@@ -112,6 +127,35 @@ const MovieDetails = ({ route, navigation }) => {
         } catch (error) {
             console.error(error)
             Alert.alert('Error', 'Failed to update watchlist')
+        }
+    }
+    const handleAddToFavorites = async () => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        if (!sessionId) {
+            navigation.navigate('Authentication')
+            return
+        }
+        try {
+            if (inFavorites) {
+                const response = await removeFromFavorites(movieId, sessionId)
+                if (response.success) {
+                    setInFavorites(false)
+                    Alert.alert('Success', 'Removed from favorites')
+                } else {
+                    Alert.alert('Error', response.status_message)
+                }
+            } else {
+                const response = await addToFavorites(movieId, sessionId)
+                if (response.success) {
+                    setInFavorites(true)
+                    Alert.alert('Success', 'Added to favorites')
+                } else {
+                    Alert.alert('Error', response.status_message)
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            Alert.alert('Error', 'Failed to update favorites')
         }
     }
 
@@ -165,7 +209,7 @@ const MovieDetails = ({ route, navigation }) => {
                                     }
                                 >
                                     <Ionicons
-                                        name={'play-circle'}
+                                        name={'play-circle-outline'}
                                         size={34}
                                         color="white"
                                     />
@@ -196,7 +240,7 @@ const MovieDetails = ({ route, navigation }) => {
                                     onPress={() => setRatingModalVisible(true)}
                                 >
                                     <Ionicons
-                                        name={'star'}
+                                        name={'star-outline'}
                                         size={34}
                                         color="white"
                                     />
@@ -207,16 +251,20 @@ const MovieDetails = ({ route, navigation }) => {
                             </View>
                             <View style={styles.iconStyle}>
                                 <Pressable
-                                    onPress={() => handleAddToMovieCollection()}
+                                    onPress={() => handleAddToFavorites()}
                                 >
                                     <Ionicons
-                                        name={'list'}
+                                        name={
+                                            inFavorites
+                                                ? 'heart'
+                                                : 'heart-outline'
+                                        }
                                         size={34}
                                         color="white"
                                     />
                                 </Pressable>
                                 <Text style={{ color: 'white' }}>
-                                    Add To List
+                                    Favourite
                                 </Text>
                             </View>
                         </View>
