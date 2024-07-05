@@ -62,3 +62,5 @@ function queryString(obj) {
         .map(([index, val]) => `${index}=${val}`)
         .join('&')
 }
+
+export { BASE_URL, defaultParams }

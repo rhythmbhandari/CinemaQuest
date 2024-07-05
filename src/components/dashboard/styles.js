@@ -51,14 +51,8 @@ const styles = StyleSheet.create({
 
     overview: {
         color: 'white',
-        marginBottom: 10,
         padding: 10,
     },
-
-    detailsContainer: {
-        alignItems: 'center',
-    },
-
     rating: {
         color: '#fff',
         fontSize: 16,
@@ -123,6 +117,23 @@ const styles = StyleSheet.create({
     similarMovieImage: {
         height: 180,
         width: 100,
+    },
+    iconContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        margin: 10,
+    },
+    iconStyle: {
+        alignItems: 'center',
+    },
+    text: {
+        color: 'white',
+    },
+    reviewTxt: {
+        color: 'white',
+        padding: 10,
     },
 })
 

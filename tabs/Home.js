@@ -4,10 +4,11 @@ import Dashboard from '../src/components/dashboard/Dashboard'
 import AllMovies from '../src/components/dashboard/AllMovies'
 import MovieDetails from '../src/components/dashboard/MovieDetails'
 import CastDetails from '../src/components/cast/CastDetails'
+import Authentication from '../src/components/Authentication'
 
 const HomeStack = createNativeStackNavigator()
 
-const commonHeaderOptions = {
+export const commonHeaderOptions = {
     headerStyle: {
         backgroundColor: 'black',
     },
@@ -15,7 +16,14 @@ const commonHeaderOptions = {
     headerTitleAlign: 'center',
 }
 
-export default function Home() {
+const Home = ({ navigation }) => {
+    React.useLayoutEffect(() => {
+        const cancelStacks = navigation.addListener('tabPress', e => {
+            e.preventDefault()
+            navigation.navigate('Dashboard')
+        })
+        return cancelStacks
+    }, [navigation])
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen
@@ -38,6 +46,11 @@ export default function Home() {
                 component={CastDetails}
                 options={commonHeaderOptions}
             />
+            <HomeStack.Screen
+                name="Authentication"
+                component={Authentication}
+            />
         </HomeStack.Navigator>
     )
 }
+export default Home
