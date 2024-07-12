@@ -12,24 +12,42 @@ export const getRequestToken = async () => {
 }
 
 export const createSession = async requestToken => {
+    try {
+        const response = await fetch(
+            `${BASE_URL}/authentication/session/new?api_key=${API_KEY}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ request_token: requestToken }),
+            }
+        )
+        const data = await response.json()
+
+        if (data.success && data.session_id) {
+            await AsyncStorage.setItem('session_id', data.session_id)
+            return data.session_id
+        } else {
+            throw new Error(data.status_message || 'Failed to create session')
+        }
+    } catch (error) {
+        throw error
+    }
+}
+export const deleteSession = async sessionId => {
     const response = await fetch(
-        `${BASE_URL}/authentication/session/new?api_key=${API_KEY}`,
+        `${BASE_URL}/authentication/session?api_key=${API_KEY}`,
         {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ request_token: requestToken }),
+            body: JSON.stringify({ session_id: sessionId }),
         }
     )
     const data = await response.json()
-    console.log(data)
-    if (data.success && data.session_id) {
-        await AsyncStorage.setItem('session_id', data.session_id)
-        return data.session_id
-    } else {
-        throw new Error('Failed to create session')
-    }
+    return data
 }
 
 export const addToWatchlist = async (movieId, sessionId) => {

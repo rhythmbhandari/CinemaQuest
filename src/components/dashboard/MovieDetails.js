@@ -39,6 +39,7 @@ const MovieDetails = ({ route, navigation }) => {
     const [trailerModalVisible, setTrailerModalVisible] = useState(false)
     const [ratingModalVisible, setRatingModalVisible] = useState(false)
     const [userRating, setUserRating] = useState(0)
+    const [hasSessionId, setHasSessionId] = useState(false)
 
     function getMovieDetails() {
         setLoading(true)
@@ -57,6 +58,14 @@ const MovieDetails = ({ route, navigation }) => {
             })
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
+    }
+    const getSessionId = async () => {
+        const sessionId = await AsyncStorage.getItem('session_id')
+        if (sessionId) {
+            setHasSessionId(true)
+        } else {
+            setHasSessionId(false)
+        }
     }
 
     const checkWatchlistStatus = async () => {
@@ -84,6 +93,7 @@ const MovieDetails = ({ route, navigation }) => {
         getMovieDetails()
         checkWatchlistStatus()
         checkFavoritesStatus()
+        getSessionId()
     }, [])
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible)
@@ -237,7 +247,13 @@ const MovieDetails = ({ route, navigation }) => {
                             </View>
                             <View style={styles.iconStyle}>
                                 <Pressable
-                                    onPress={() => setRatingModalVisible(true)}
+                                    onPress={() =>
+                                        hasSessionId
+                                            ? setRatingModalVisible(true)
+                                            : navigation.navigate(
+                                                  'Authentication'
+                                              )
+                                    }
                                 >
                                     <Ionicons
                                         name={'star-outline'}
