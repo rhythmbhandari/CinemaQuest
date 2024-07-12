@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { store } from './src/redux/store'
 import { Provider } from 'react-redux'
 import Favourite from './tabs/Favourite'
+import Logout from './tabs/Logout'
 SplashScreen.preventAutoHideAsync()
 
 export default function App() {
@@ -31,6 +32,10 @@ export default function App() {
                                     iconName = focused
                                         ? 'heart'
                                         : 'heart-outline'
+                                } else if (route.name === 'Logout') {
+                                    iconName = focused
+                                        ? 'log-out'
+                                        : 'log-out-outline'
                                 }
                                 return (
                                     <Ionicons
@@ -52,6 +57,7 @@ export default function App() {
                         <Tab.Screen name="HomeScreen" component={Home} />
                         <Tab.Screen name="Watchlist" component={Watchlist} />
                         <Tab.Screen name="Favourite" component={Favourite} />
+                        <Tab.Screen name="Logout" component={Logout} />
                     </Tab.Navigator>
                 </NavigationContainer>
             </GestureHandlerRootView>
