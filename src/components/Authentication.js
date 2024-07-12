@@ -14,7 +14,6 @@ const Authentication = ({ navigation }) => {
             try {
                 const requestToken = await getRequestToken()
                 setAuthUrl(`${TMDB_AUTH_URL}${requestToken}`)
-                //console.log(requestToken)
             } catch (error) {
                 Alert.alert('Error', 'Failed to get request token')
                 console.error(error)
@@ -24,27 +23,24 @@ const Authentication = ({ navigation }) => {
     }, [])
 
     const handleNavigationStateChange = async navState => {
-        //console.log('Current URL:', navState.url)
         if (navState.url.includes('/allow')) {
             const parts = navState.url.split('/')
             const requestToken = parts[parts.length - 2]
+
             if (requestToken && !isCreatingSession) {
                 setIsCreatingSession(true)
                 try {
-                    await createSession(requestToken)
+                    const sessionId = await createSession(requestToken)
                     Alert.alert('Success', 'You are now authenticated!')
                     navigation.goBack()
                 } catch (error) {
-                    Alert.alert('Error', 'Failed to create session')
-                    console.error(error)
                 } finally {
                     setIsCreatingSession(false)
                 }
-            } else {
-                console.log('No valid request token found or session creation already in progress')
             }
         }
     }
+
     if (!authUrl) {
         return (
             <View
