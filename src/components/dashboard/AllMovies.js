@@ -83,14 +83,12 @@ const AllMovies = ({ route, navigation }) => {
     )
 
     function onSearchChange(text) {
-        // dispatch action to fetch movies on input search change
         if (!text) setPage(1)
         setSearchQuery(text)
         debouncedFetchMovies(text)
     }
 
     function handleClearFilter() {
-        // dispatch action to fetch movies without filters
         setSearchQuery('')
         setFilterParams({})
         setRightDrawerOpen(false)
@@ -102,7 +100,6 @@ const AllMovies = ({ route, navigation }) => {
     }
 
     function handleApplyFilter(params) {
-        // dispatch action to fetch movies with filters
         setRightDrawerOpen(false)
         setSearchQuery('')
         setFilterParams(params)

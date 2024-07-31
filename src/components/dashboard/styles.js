@@ -107,6 +107,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 10,
     },
+    filterHeader: {
+        color: 'white',
+        fontSize: 20,
+        marginBottom: 10,
+        marginTop: 10,
+    },
     filterButton: {
         backgroundColor: '#1a1a1a',
         padding: 10,
@@ -134,6 +140,26 @@ const styles = StyleSheet.create({
     reviewTxt: {
         color: 'white',
         padding: 10,
+    },
+    datePickerContainer: {
+        flex: 1,
+        marginTop: 10,
+        alignItems: 'center',
+        backgroundColor: 'black',
+        borderWidth: 1,
+        borderColor: 'white',
+        borderRadius: 10,
+        padding: 5,
+        gap: 5,
+    },
+    datePickerTextInput: {
+        color: 'white',
+    },
+    datePickerLabel: {
+        color: '#fff',
+        fontSize: 18,
+        backgroundColor: '#1a1a1a',
+        padding: 5,
     },
 })
 
