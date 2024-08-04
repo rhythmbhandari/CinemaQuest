@@ -41,6 +41,41 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
     },
+    providerContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    providerName: {
+        color: 'white',
+        fontSize: 18,
+    },
+    attribution: {
+        color: 'grey',
+        fontSize: 14,
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    tmdbLink: {
+        color: 'skyblue',
+        fontSize: 16,
+        textAlign: 'center',
+        marginTop: 5,
+        textDecorationLine: 'underline',
+    },
+    providerLogo: {
+        width: 50,
+        height: 50,
+        marginRight: 10,
+    },
+    noProvidersContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    noProvidersText: {
+        fontSize: 16,
+        color: 'white',
+    },
 })
 
 export default styles

@@ -82,6 +82,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
     },
+    reviewContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
 
     castScrollView: {
         flexDirection: 'row',
@@ -137,9 +141,12 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
     },
-    reviewTxt: {
+    detailsBtn: {
         color: 'white',
+        backgroundColor: '#1a1a1a',
         padding: 10,
+        margin: 10,
+        borderRadius: 5,
     },
     datePickerContainer: {
         flex: 1,
