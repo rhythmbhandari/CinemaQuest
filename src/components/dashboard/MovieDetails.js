@@ -27,6 +27,7 @@ import styles from './styles'
 import ReviewModal from '../Modals/ReviewModal'
 import WatchTrailerModal from '../Modals/WatchTrailerModal'
 import RatingModal from '../Modals/RatingModal/RatingModal'
+import WatchProvidersModal from '../Modals/WatchProvidersModal'
 
 const MovieDetails = ({ route, navigation }) => {
     const { movieId } = route.params
@@ -38,13 +39,18 @@ const MovieDetails = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [trailerModalVisible, setTrailerModalVisible] = useState(false)
     const [ratingModalVisible, setRatingModalVisible] = useState(false)
+    const [watchProvidersModalVisible, setWatchProvidersModalVisible] =
+        useState(false)
     const [userRating, setUserRating] = useState(0)
     const [hasSessionId, setHasSessionId] = useState(false)
+    const [watchProviders, setWatchProviders] = useState([])
+    const [tmdbUrl, setTmdbUrl] = useState('')
 
     function getMovieDetails() {
         setLoading(true)
         fetchMovieDetails(movieId, {
-            append_to_response: 'credits,videos,images,similar,reviews',
+            append_to_response:
+                'credits,videos,images,similar,reviews,watch/providers',
         })
             .then(response => {
                 setMovieDetails(response)
@@ -55,6 +61,20 @@ const MovieDetails = ({ route, navigation }) => {
                 if (trailer) {
                     setTrailerKey(trailer.key)
                 }
+                if (
+                    response['watch/providers'] &&
+                    response['watch/providers'].results.US &&
+                    Object.keys(response['watch/providers'].results).length > 0
+                ) {
+                    setWatchProviders(
+                        response['watch/providers'].results.CA.flatrate ||
+                            response['watch/providers'].results.CA.buy ||
+                            []
+                    )
+                } else {
+                    setWatchProviders([])
+                }
+                setTmdbUrl(`https://www.themoviedb.org/movie/${movieId}`)
             })
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
@@ -100,6 +120,9 @@ const MovieDetails = ({ route, navigation }) => {
     }
     const toggleTrailerModalVisibility = () => {
         setTrailerModalVisible(!trailerModalVisible)
+    }
+    const toggleWatchProvidersModalVisibility = () => {
+        setWatchProvidersModalVisible(!watchProvidersModalVisible)
     }
 
     const convertToGenres = (genre, messageNotFound = 'Uninformed') =>
@@ -306,16 +329,26 @@ const MovieDetails = ({ route, navigation }) => {
                         <Text style={styles.overview}>
                             Overview: {movieDetails.overview}
                         </Text>
-                        <Pressable onPress={toggleModalVisibility}>
-                            <Text style={styles.reviewTxt}>
-                                See Reviews ...
-                            </Text>
-                        </Pressable>
-                        <ReviewModal
-                            modalVisible={modalVisible}
-                            toggleModalVisibility={toggleModalVisibility}
-                            reviews={movieDetails.reviews.results}
-                        />
+                        <View style={styles.reviewContainer}>
+                            <Pressable onPress={toggleModalVisibility}>
+                                <Text style={styles.detailsBtn}>
+                                    See Reviews
+                                </Text>
+                            </Pressable>
+                            <ReviewModal
+                                modalVisible={modalVisible}
+                                toggleModalVisibility={toggleModalVisibility}
+                                reviews={movieDetails.reviews.results}
+                            />
+                            <Pressable
+                                onPress={toggleWatchProvidersModalVisibility}
+                            >
+                                <Text style={styles.detailsBtn}>
+                                    Watch Providers
+                                </Text>
+                            </Pressable>
+                        </View>
+
                         <Text
                             style={{ color: 'white', margin: 5, fontSize: 20 }}
                         >
@@ -399,6 +432,12 @@ const MovieDetails = ({ route, navigation }) => {
                 visible={ratingModalVisible}
                 onClose={() => setRatingModalVisible(false)}
                 onSubmit={handleRateMovie}
+            />
+            <WatchProvidersModal
+                modalVisible={watchProvidersModalVisible}
+                toggleModalVisibility={toggleWatchProvidersModalVisibility}
+                providers={watchProviders}
+                tmdbUrl={tmdbUrl}
             />
         </SafeAreaView>
     )
