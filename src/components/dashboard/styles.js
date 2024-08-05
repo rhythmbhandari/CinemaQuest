@@ -142,12 +142,15 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     detailsBtn: {
-        color: 'white',
         backgroundColor: '#1a1a1a',
         padding: 10,
-        margin: 10,
-        borderRadius: 5,
+        margin: 2,
+        borderRadius: 10,
     },
+    detailsTxt: {
+        color: 'white',
+    },
+
     datePickerContainer: {
         flex: 1,
         marginTop: 10,

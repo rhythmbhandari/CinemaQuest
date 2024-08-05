@@ -76,6 +76,41 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
     },
+    movieContainer: {
+        width: 150,
+        margin: 10,
+        backgroundColor: '#444',
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
+    movieImage: {
+        width: '100%',
+        height: 250,
+    },
+    movieTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
+        padding: 5,
+    },
+    movieOverview: {
+        fontSize: 14,
+        color: 'white',
+        padding: 5,
+    },
+    noRecommendationsContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200,
+    },
+    noRecommendationsText: {
+        fontSize: 18,
+        color: 'grey',
+    },
+    text: {
+        fontSize: 18,
+        color: 'white',
+    },
 })
 
 export default styles

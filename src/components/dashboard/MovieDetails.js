@@ -28,6 +28,7 @@ import ReviewModal from '../Modals/ReviewModal'
 import WatchTrailerModal from '../Modals/WatchTrailerModal'
 import RatingModal from '../Modals/RatingModal/RatingModal'
 import WatchProvidersModal from '../Modals/WatchProvidersModal'
+import MovieRecommendationsModal from '../Modals/MovieRecommendationsModal'
 
 const MovieDetails = ({ route, navigation }) => {
     const { movieId } = route.params
@@ -41,16 +42,21 @@ const MovieDetails = ({ route, navigation }) => {
     const [ratingModalVisible, setRatingModalVisible] = useState(false)
     const [watchProvidersModalVisible, setWatchProvidersModalVisible] =
         useState(false)
+    const [
+        movieRecommendationsModalVisible,
+        setMovieRecommendationsModalVisible,
+    ] = useState(false)
     const [userRating, setUserRating] = useState(0)
     const [hasSessionId, setHasSessionId] = useState(false)
     const [watchProviders, setWatchProviders] = useState([])
+    const [movieRecommendations, setMoviewRecommendations] = useState([])
     const [tmdbUrl, setTmdbUrl] = useState('')
 
     function getMovieDetails() {
         setLoading(true)
         fetchMovieDetails(movieId, {
             append_to_response:
-                'credits,videos,images,similar,reviews,watch/providers',
+                'credits,videos,images,similar,reviews,watch/providers,recommendations',
         })
             .then(response => {
                 setMovieDetails(response)
@@ -75,6 +81,7 @@ const MovieDetails = ({ route, navigation }) => {
                     setWatchProviders([])
                 }
                 setTmdbUrl(`https://www.themoviedb.org/movie/${movieId}`)
+                setMoviewRecommendations(response.recommendations.results || [])
             })
             .catch(error => console.error(error))
             .finally(() => setLoading(false))
@@ -125,6 +132,9 @@ const MovieDetails = ({ route, navigation }) => {
         setWatchProvidersModalVisible(!watchProvidersModalVisible)
     }
 
+    const toggleRecommendationsModalVisibility = () => {
+        setMovieRecommendationsModalVisible(!movieRecommendationsModalVisible)
+    }
     const convertToGenres = (genre, messageNotFound = 'Uninformed') =>
         genre.length > 0
             ? genre.length > 1
@@ -330,8 +340,11 @@ const MovieDetails = ({ route, navigation }) => {
                             Overview: {movieDetails.overview}
                         </Text>
                         <View style={styles.reviewContainer}>
-                            <Pressable onPress={toggleModalVisibility}>
-                                <Text style={styles.detailsBtn}>
+                            <Pressable
+                                onPress={toggleModalVisibility}
+                                style={styles.detailsBtn}
+                            >
+                                <Text style={styles.detailsTxt}>
                                     See Reviews
                                 </Text>
                             </Pressable>
@@ -342,9 +355,18 @@ const MovieDetails = ({ route, navigation }) => {
                             />
                             <Pressable
                                 onPress={toggleWatchProvidersModalVisibility}
+                                style={styles.detailsBtn}
                             >
-                                <Text style={styles.detailsBtn}>
+                                <Text style={styles.detailsTxt}>
                                     Watch Providers
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={toggleRecommendationsModalVisibility}
+                                style={styles.detailsBtn}
+                            >
+                                <Text style={styles.detailsTxt}>
+                                    Recommendations
                                 </Text>
                             </Pressable>
                         </View>
@@ -438,6 +460,12 @@ const MovieDetails = ({ route, navigation }) => {
                 toggleModalVisibility={toggleWatchProvidersModalVisibility}
                 providers={watchProviders}
                 tmdbUrl={tmdbUrl}
+            />
+            <MovieRecommendationsModal
+                modalVisible={movieRecommendationsModalVisible}
+                toggleModalVisibility={toggleRecommendationsModalVisibility}
+                recommendations={movieRecommendations}
+                navigation={navigation}
             />
         </SafeAreaView>
     )
