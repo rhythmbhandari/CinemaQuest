@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native'
 
 const Logout = ({ navigation }) => {
     const handleLogout = async () => {
+        navigation.navigate('HomeScreen')
         try {
             const sessionId = await AsyncStorage.getItem('session_id')
             if (!sessionId) {
@@ -33,7 +34,7 @@ const Logout = ({ navigation }) => {
                                 if (deleteResult.success) {
                                     await AsyncStorage.removeItem('session_id')
                                     Alert.alert('Session deleted successfully')
-                                    navigation.navigate('HomeScreen') // Navigate to home screen
+                                    navigation.navigate('HomeScreen')
                                 } else {
                                     Alert.alert(
                                         'Error',
@@ -67,7 +68,7 @@ const Logout = ({ navigation }) => {
         }, [])
     )
 
-    return <View style={{ flex: 1, backgroundColor: 'black' }} />
+    return ''
 }
 
 export default Logout
